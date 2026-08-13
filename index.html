@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Contact Merwan</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #111827, #1e3a5f);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: white;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 430px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 25px;
+      padding: 30px 22px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .logo {
+      width: 75px;
+      height: 75px;
+      margin: 0 auto 15px;
+      border-radius: 50%;
+      background: white;
+      color: #1e3a5f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 27px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #cbd5e1;
+      margin-bottom: 28px;
+      font-size: 14px;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #e2e8f0;
+    }
+
+    .people {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .person {
+      flex: 1;
+      padding: 15px;
+      border-radius: 15px;
+      border: 2px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      cursor: pointer;
+      text-align: center;
+      transition: 0.2s;
+      font-size: 16px;
+    }
+
+    .person:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .person.active {
+      background: white;
+      color: #1e3a5f;
+      border-color: white;
+      font-weight: bold;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 160px;
+      resize: vertical;
+      border: none;
+      outline: none;
+      border-radius: 17px;
+      padding: 17px;
+      font-size: 16px;
+      background: rgba(255,255,255,0.95);
+      color: #111827;
+      margin-bottom: 18px;
+    }
+
+    textarea::placeholder {
+      color: #64748b;
+    }
+
+    .send-btn {
+      width: 100%;
+      border: none;
+      border-radius: 17px;
+      padding: 17px;
+      background: #2563eb;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .send-btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .send-btn:active {
+      transform: scale(0.98);
+    }
+
+    .status {
+      display: none;
+      text-align: center;
+      margin-top: 18px;
+      padding: 13px;
+      border-radius: 12px;
+      background: rgba(34,197,94,0.15);
+      color: #86efac;
+      font-size: 14px;
+    }
+
+    .footer {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+      margin-top: 25px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="logo">M</div>
+
+    <h1>Contact Merwan</h1>
+
+    <p class="subtitle">
+      Send me a message anytime
+    </p>
+
+    <label class="label">Who are you?</label>
+
+    <div class="people">
+      <button class="person active" onclick="selectPerson('Mom', this)">
+        👩 Mom
+      </button>
+
+      <button class="person" onclick="selectPerson('Dad', this)">
+        👨 Dad
+      </button>
+    </div>
+
+    <label class="label">Your message</label>
+
+    <textarea
+      id="message"
+      placeholder="Write your message here..."
+      maxlength="1000"
+    ></textarea>
+
+    <button class="send-btn" onclick="sendMessage()">
+      Send Message
+    </button>
+
+    <div class="status" id="status">
+      ✓ Message sent successfully
+    </div>
+
+    <div class="footer">
+      Private family contact
+    </div>
+
+  </div>
+
+
+  <script>
+
+    let selectedPerson = "Mom";
+
+    function selectPerson(person, button) {
+
+      selectedPerson = person;
+
+      document.querySelectorAll(".person").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+    }
+
+
+    async function sendMessage() {
+
+      const messageBox = document.getElementById("message");
+      const status = document.getElementById("status");
+
+      const message = messageBox.value.trim();
+
+      if (message === "") {
+        alert("Please write a message first.");
+        return;
+      }
+
+      /*
+        IMPORTANT:
+
+        We will connect this to your secure backend later.
+
+        Example:
+
+        const response = await fetch(
+          "YOUR-BACKEND-URL",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              sender: selectedPerson,
+              message: message
+            })
+          }
+        );
+      */
+
+      console.log({
+        sender: selectedPerson,
+        message: message
+      });
+
+      status.style.display = "block";
+
+      messageBox.value = "";
+
+      setTimeout(() => {
+        status.style.display = "none";
+      }, 4000);
+    }
+
+  </script>
+
+</body>
+</html>
