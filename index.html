@@ -139,6 +139,12 @@
       transform: scale(0.98);
     }
 
+    .send-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     .status {
       display: none;
       text-align: center;
@@ -148,6 +154,11 @@
       background: rgba(34,197,94,0.15);
       color: #86efac;
       font-size: 14px;
+    }
+
+    .status.error {
+      background: rgba(239,68,68,0.15);
+      color: #fca5a5;
     }
 
     .footer {
@@ -174,13 +185,21 @@
     <label class="label">Who are you?</label>
 
     <div class="people">
-      <button class="person active" onclick="selectPerson('Mom', this)">
+
+      <button
+        class="person active"
+        onclick="selectPerson('Mom', this)"
+      >
         👩 Mom
       </button>
 
-      <button class="person" onclick="selectPerson('Dad', this)">
+      <button
+        class="person"
+        onclick="selectPerson('Dad', this)"
+      >
         👨 Dad
       </button>
+
     </div>
 
     <label class="label">Your message</label>
@@ -191,13 +210,15 @@
       maxlength="1000"
     ></textarea>
 
-    <button class="send-btn" onclick="sendMessage()">
+    <button
+      class="send-btn"
+      id="sendButton"
+      onclick="sendMessage()"
+    >
       Send Message
     </button>
 
-    <div class="status" id="status">
-      ✓ Message sent successfully
-    </div>
+    <div class="status" id="status"></div>
 
     <div class="footer">
       Private family contact
@@ -209,6 +230,11 @@
   <script>
 
     let selectedPerson = "Mom";
+
+    // Your Vercel backend
+    const BACKEND_URL =
+      "https://parents-gray.vercel.app/api/send";
+
 
     function selectPerson(person, button) {
 
@@ -224,50 +250,97 @@
 
     async function sendMessage() {
 
-      const messageBox = document.getElementById("message");
-      const status = document.getElementById("status");
+      const messageBox =
+        document.getElementById("message");
 
-      const message = messageBox.value.trim();
+      const status =
+        document.getElementById("status");
+
+      const sendButton =
+        document.getElementById("sendButton");
+
+      const message =
+        messageBox.value.trim();
+
 
       if (message === "") {
         alert("Please write a message first.");
         return;
       }
 
-      /*
-        IMPORTANT:
 
-        We will connect this to your secure backend later.
+      // Prevent double clicking
+      sendButton.disabled = true;
+      sendButton.textContent = "Sending...";
 
-        Example:
+      status.style.display = "none";
+      status.classList.remove("error");
+
+
+      try {
 
         const response = await fetch(
-          "YOUR-BACKEND-URL",
+          BACKEND_URL,
           {
             method: "POST",
+
             headers: {
               "Content-Type": "application/json"
             },
+
             body: JSON.stringify({
               sender: selectedPerson,
               message: message
             })
           }
         );
-      */
 
-      console.log({
-        sender: selectedPerson,
-        message: message
-      });
 
-      status.style.display = "block";
+        const data = await response.json();
 
-      messageBox.value = "";
 
-      setTimeout(() => {
-        status.style.display = "none";
-      }, 4000);
+        if (!response.ok) {
+          throw new Error(
+            data.error || "Something went wrong."
+          );
+        }
+
+
+        // SUCCESS
+        status.textContent =
+          "✓ Message sent successfully";
+
+        status.style.display = "block";
+
+        messageBox.value = "";
+
+
+        setTimeout(() => {
+          status.style.display = "none";
+        }, 4000);
+
+
+      } catch (error) {
+
+        console.error(
+          "Send error:",
+          error
+        );
+
+        status.textContent =
+          "✕ Message could not be sent. Please try again.";
+
+        status.classList.add("error");
+
+        status.style.display = "block";
+
+      }
+
+
+      // Enable button again
+      sendButton.disabled = false;
+      sendButton.textContent = "Send Message";
+
     }
 
   </script>
